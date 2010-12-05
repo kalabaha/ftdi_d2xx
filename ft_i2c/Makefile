@@ -1,5 +1,4 @@
 APP = ft_i2c
-CC = g++ 
 
 OS = $(shell uname -s)
 ifeq  ($(OS), Linux)
@@ -7,6 +6,7 @@ ifeq  ($(OS), Linux)
 	LIBS = -lftd2xx -L/opt/lib64/ -Wl,-rpath,/opt/lib64/
 else
 	LIBS = "../ft_libs_win/FTD2XX.lib"
+	CC = g++ -enable-auto-import -static
 	LINK = g++ -static
 endif
 
