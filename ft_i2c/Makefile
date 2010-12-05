@@ -1,21 +1,22 @@
-LIBS = "../ft_libs_win/FTD2XX.lib"
-CXX = i686-mingw32-g++ -static
-LINK = g++
+APP = ft_i2c
+CC = g++ 
 
-ft_i2c: tst.o fthight.o ft_i2c.o
-	$(LINK) -o ft_i2c tst.o fthight.o ft_i2c.o $(LIBS)
+OS = $(shell uname -s)
+ifeq  ($(OS), Linux)
+	CC = g++
+	LIBS = -lftd2xx -L/opt/lib64/ -Wl,-rpath,/opt/lib64/
+else
+	LIBS = "../ft_libs_win/FTD2XX.lib"
+	LINK = g++ -static
+endif
 
-tst.o: tst.cpp
-	$(CXX) -c -o tst.o tst.cpp 
 
-fthight.o: ../ft_hight/fthight.cpp
-	$(CXX) -c -o fthight.o ../ft_hight/fthight.cpp
+SOURCES = ../ft_hight/fthight.cpp ft_i2c.cpp tst.cpp
 
-ft_i2c.o: ft_i2c.cpp
-	$(CXX) -c -o ft_i2c.o ft_i2c.cpp
+all: $(APP)
 
 clean:
-	del fthight.o tst.o ft_i2c.o
+	rm -f $(APP) *.o
 
-clean_all: clean
-	del ft_i2c.exe
+$(APP): $(SOURCES:.c=.o)
+	$(LINK.o) $^ $(LIBS) -o $@

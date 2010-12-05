@@ -80,15 +80,11 @@ void FTHight::clear()
 
 void FTHight::send()
 {
-    FT_HANDLE fthandle;
-    FT_Open(dev_number, &fthandle);
-    FT_SetBaudRate(fthandle, baudrate);
-    FT_SetBitMode(fthandle, mask, mode);
+    //FT_HANDLE fthandle;
+    //FT_Open(dev_number, &fthandle);
+    //FT_SetBaudRate(fthandle, baudrate);
+    //FT_SetBitMode(fthandle, mask, mode);
     
 
-    FT_Close(fthandle);
+    //FT_Close(fthandle);
 }
-
-
-
-
