@@ -20,7 +20,8 @@ FTHight::FTHight(unsigned int dev_number, unsigned int baudrate, unsigned char m
     this->baudrate = baudrate;
     this->mask = mask;
     this->mode = mode;
-    this->data = new char[size];
+    this->output_data = new char[size];
+    this->input_data = new char[size];
     this->data_size = size;
     this->index = new int;
     *this->index = 0;
@@ -34,16 +35,17 @@ FTHight::FTHight(unsigned int size)
     this->baudrate = 9600;
     this->mask = 0b01000010;
     this->mode = SYNC_MODE;
-    this->data = new char[255];
-    this->data_size = 255;
+    this->output_data = new char[size];
+    this->input_data = new char[size];
+    this->data_size = size;
     this->index = new int;
     *this->index = 0;
 }
 
 FTHight FTHight::operator<<(char c)
 {
-    this->data[*this->index] = c;
-    *this->index = *this->index + 1;
+    output_data[*index] = c;
+    *index = *index + 1;
     return *this;
 }
 
@@ -53,38 +55,51 @@ void FTHight::print(bool is_hex)
     int i;
     std::cout << "----begin----" << std::endl;
     if (is_hex)
-        for (i = 0; i < *this->index; i++)
+        for (i = 0; i < *index; i++)
         {
-            std::cout << hexdigit[((unsigned char)this->data[i] / 16)];
-            std::cout << hexdigit[((unsigned char)this->data[i] % 16)];
-            std::cout << " ";
+            std::cout << i << " : ";
+            std::cout << hexdigit[((unsigned char)output_data[i] / 16)];
+            std::cout << hexdigit[((unsigned char)output_data[i] % 16)];
+            std::cout << std::endl;
         }
     else
-        for (i = 0; i < *this->index; i++)
+        for (i = 0; i < *index; i++)
         {
-            //std::cout << this->data[i] << " ";
             std::cout << i << " : ";
-            printByte(this->data[i]);
-            //std::cout << i << " : " <<(int) this->data[i] << std::endl;
+            printByte(output_data[i]);
         }
     std::cout << std::endl << "-----end-----" << std::endl;
 }
 
 void FTHight::clear()
 {
-    *this->index = 0;
+    *index = 0;
     int i;
-    for (i = 0; i < this->data_size; i++)
-        this->data[i] = 0;
+    for (i = 0; i < data_size; i++)
+        output_data[i] = 0;
 }
 
 void FTHight::send()
 {
-    //FT_HANDLE fthandle;
-    //FT_Open(dev_number, &fthandle);
-    //FT_SetBaudRate(fthandle, baudrate);
-    //FT_SetBitMode(fthandle, mask, mode);
-    
+    DWORD written;
 
-    //FT_Close(fthandle);
+    FT_HANDLE fthandle;
+    FT_Open(dev_number, &fthandle);
+    FT_SetBaudRate(fthandle, baudrate);
+    FT_SetBitMode(fthandle, mask, mode);
+    FT_Write(fthandle, output_data, index, &written);
+    FT_Close(fthandle);
 }
+
+void FTHight::send_read(unsigned char * input_data, unsigned int * readed)
+{
+    DWORD written;
+    FT_HANDLE fthandle;
+    FT_Open(dev_number, &fthandle);
+    FT_SetBaudRate(fthandle, baudrate);
+    FT_SetBitMode(fthandle, mask, mode);
+    FT_Write(fthandle, output_data, index, &written);
+    FT_Read(fthandle, input_data, index, readed);
+    FT_Close(fthandle);
+}
+
