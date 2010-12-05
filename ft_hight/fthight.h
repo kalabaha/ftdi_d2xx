@@ -1,6 +1,5 @@
-
-/*#ifdef LINUX*/
-/*#endif*/
+#ifndef fthight_h
+#define fthight_h
 
 #ifdef WIN32
 #include <windows.h>
@@ -31,3 +30,5 @@ public:
     void clear();
     FTHight operator<< (char new_item);
 };
+
+#endif 

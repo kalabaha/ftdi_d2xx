@@ -1,3 +1,6 @@
+#ifndef ft_i2c_h
+#define ft_i2c_h
+
 #include "../ft_hight/fthight.h"
 
 class FT_I2C
@@ -13,3 +16,5 @@ public:
     void send(bool is_hex);
     void clear();
 };
+
+#endif
