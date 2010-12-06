@@ -15,6 +15,7 @@ int main()
     {
         std::cout << "1 - write" << std::endl;
         std::cout << "2 - read" << std::endl;
+        std::cout << "3 - read n bytes" << std::endl;
         int selector;
         union 
         {
@@ -48,8 +49,26 @@ int main()
                 std::cout << "data = " << data.data_int << std::endl;
                 std::cout << "---reading---" << std::endl;
                 break;
+            case 3:
+                std::cout << "---readitn N bytes---" << std::endl;
+                std::cout << "start address: ";
+                std::cin >> address;
+                unsigned int count;
+                count = 0;
+                std::cout << "count: ";
+                std::cin >> count;
+                std::cout << "---reading---" << std::endl;
+                unsigned char * data;
+                data = NULL;
+                data = fteeprom.read_Nbytes(address, count);
+                int i;
+                for (i=0; i<count; i++)
+                    std::cout << i << " : " << (int)data[i] << std::endl;
+                std::cout << "---end---" << std::endl;
+                break;
             default:
                 std::cout << "error" << std::endl;
+                break;
         }
     }
     return 0;
