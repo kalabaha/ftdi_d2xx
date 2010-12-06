@@ -21,7 +21,7 @@ int main()
     FT_Struct ft;
     FT_I2C_Struct fti2c;
 
-    ft_hight_init(&ft, 0, 9600, (~ (1 << SDAREAD)), FT_SYNC, 1000);
+    ft_hight_init(&ft, 0, 9600, ~ (1 << SDAREAD), FT_SYNC, 1000);
     ft_i2c_init(&fti2c, &ft, SCL, SDA, SDAREAD);
 
     /*ft_i2c_eeprom_write_byte(&fti2c, DEV_ADDR, 300, 76);*/

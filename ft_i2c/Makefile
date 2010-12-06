@@ -20,5 +20,5 @@ all: $(APP)
 clean:
 	$(RM) $(APP) 
 
-$(APP): $(SOURCES:.c=.o)
+$(APP): $(SOURCES:.cpp=.o)
 	$(LINK.o) $^ $(LIBS) -o $@

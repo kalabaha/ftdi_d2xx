@@ -17,7 +17,7 @@ SOURCES = ../ft_hight/fthight.cpp ../ft_i2c/ft_i2c.cpp ft_i2c_eeprom.cpp tst.cpp
 all: $(APP)
 
 clean:
-	$(RM) $(APP) *.o
+	$(RM) $(APP) $(SOURCES:.cpp=.o)
 
-$(APP): $(SOURCES:.c=.o)
+$(APP): $(SOURCES:.cpp=.o)
 	$(LINK.o) $^ $(LIBS) -o $@
