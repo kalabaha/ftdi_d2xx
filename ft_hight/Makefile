@@ -7,13 +7,12 @@ ifeq  ($(OS), Linux)
 else
 	CC = g++ -static
 	LIBS = "../ft_libs_win/FTD2XX.lib"
-	CC = g++ -enable-auto-import -static
 	LINK = g++ -static
 	RM = del
 	APP = ft_i2c.exe
 endif
 
-SOURCES = ../ft_hight/fthight.cpp ft_i2c.cpp tst.cpp
+SOURCES = fthight.cpp tst.cpp
 
 all: $(APP)
 
