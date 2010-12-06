@@ -16,6 +16,7 @@ public:
     void put_stop();
     void put_byte(unsigned char data);
     void send();
+    void send_read(unsigned char * input_data, unsigned int * recived); 
     void print(bool is_hex);
     void clear();
 };

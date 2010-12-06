@@ -65,6 +65,7 @@ void FTHight::print(bool is_hex)
         {
             std::cout << i << " : ";
             printByte(output_data[i]);
+            //std::cout << (int)output_data[i] << std::endl;
         }
     std::cout << std::endl << "-----end-----" << std::endl;
 }
@@ -111,39 +112,40 @@ void FTHight::send_read(unsigned char * input_data, unsigned int * readed)
     FT_Open(dev_number, &fthandle);
     FT_SetBaudRate(fthandle, baudrate);
     FT_SetBitMode(fthandle, mask, mode);
-    if (FT_Write(fthandle, output_data, (DWORD)index, &written)!=FT_OK)
-    {
-        FT_Close(fthandle);
-        return;
-    }
-    do
-    {
-        ftStatus = FT_GetStatus(fthandle, &ftRxBytes, &ftTxBytes, &ftEvStat);
-        if (ftStatus == FT_IO_ERROR)
-        {
-            FT_Close(fthandle);
-            return;
-        }
-    } while (ftRxBytes == written);
+    FT_Write(fthandle, output_data, (DWORD)*index, &written);
+    FT_Read(fthandle, input_data, (DWORD)*index, (DWORD*)readed);
+    //if (FT_Write(fthandle, output_data, (DWORD)index, &written)!=FT_OK)
+    //{
+        //FT_Close(fthandle);
+        //return;
+    //}
+    //do
+    //{
+        //ftStatus = FT_GetStatus(fthandle, &ftRxBytes, &ftTxBytes, &ftEvStat);
+        //if (ftStatus == FT_IO_ERROR)
+        //{
+            //FT_Close(fthandle);
+            //return;
+        //}
+    //} while (ftRxBytes == written);
 
-    bool flTimedout = false;
-    bool flFatalError = false;
-    DWORD totalBytesRead = 0;
-    DWORD bytesRead;
-    do
-    {
-        bytesRead = 0;
-        ftStatus = FT_Read(fthandle, input_data, ftRxBytes, &bytesRead);
-        if ((ftStatus == FT_OK) || (ftStatus == FT_IO_ERROR))
-            if (bytesRead > 0)
-                totalBytesRead += bytesRead;
-            else
-                flTimedout = true;
-        else
-            flFatalError = true;
-    } while ((totalBytesRead = ftRxBytes) || flTimedout || flFatalError);
+    //bool flTimedout = false;
+    //bool flFatalError = false;
+    //DWORD totalBytesRead = 0;
+    //DWORD bytesRead;
+    //do
+    //{
+        //bytesRead = 0;
+        //ftStatus = FT_Read(fthandle, input_data, ftRxBytes, &bytesRead);
+        //if ((ftStatus == FT_OK) || (ftStatus == FT_IO_ERROR))
+            //if (bytesRead > 0)
+                //totalBytesRead += bytesRead;
+            //else
+                //flTimedout = true;
+        //else
+            //flFatalError = true;
+    //} while ((totalBytesRead = ftRxBytes) || flTimedout || flFatalError);
 
-    FT_Read(fthandle, input_data, (DWORD)index, (DWORD*)readed);
 
     FT_Close(fthandle);
 }

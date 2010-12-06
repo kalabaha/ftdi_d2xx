@@ -3,7 +3,7 @@
 
 FT_I2C::FT_I2C(unsigned int size, unsigned char SDA, unsigned char SCL, unsigned char SDAREAD)
 {
-    this->ft = new FTHight(size);
+    this->ft = new FTHight(0, 9600,((~SDAREAD)), SYNC_MODE, 255);
     this->scl = SCL;
     this->sda = SDA;
     this->sda_read = SDAREAD;
@@ -44,7 +44,12 @@ void FT_I2C::put_byte(unsigned char data)
 
 void FT_I2C::send()
 {
-    ft->send_read(input_data);
+    //ft->send_read(input_data);
+}
+
+void FT_I2C::send_read(unsigned char * input_data, unsigned int * recived)
+{
+    ft->send_read(input_data, recived);
 }
 
 
