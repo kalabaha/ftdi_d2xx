@@ -5,7 +5,6 @@ ifeq  ($(OS), Linux)
 	RM = rm -f
 	APP = ft_i2c_eeprom
 else
-	CC = g++ -static
 	LIBS = "../ft_libs_win/FTD2XX.lib"
 	CC = g++ -enable-auto-import -static
 	LINK = g++ -static
