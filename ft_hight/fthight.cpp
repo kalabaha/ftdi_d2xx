@@ -21,7 +21,6 @@ FTHight::FTHight(unsigned int dev_number, unsigned int baudrate, unsigned char m
     this->mask = mask;
     this->mode = mode;
     this->output_data = new char[size];
-    this->input_data = new char[size];
     this->data_size = size;
     this->index = new int;
     *this->index = 0;
@@ -33,10 +32,9 @@ FTHight::FTHight(unsigned int size)
 {
     this->dev_number = 0;
     this->baudrate = 9600;
-    this->mask = 0b01000010;
+    this->mask = 0b11111111;
     this->mode = SYNC_MODE;
     this->output_data = new char[size];
-    this->input_data = new char[size];
     this->data_size = size;
     this->index = new int;
     *this->index = 0;
@@ -87,19 +85,66 @@ void FTHight::send()
     FT_Open(dev_number, &fthandle);
     FT_SetBaudRate(fthandle, baudrate);
     FT_SetBitMode(fthandle, mask, mode);
-    FT_Write(fthandle, output_data, index, &written);
+    FT_Write(fthandle, output_data, (DWORD)*index, &written);
+    FT_Close(fthandle);
+}
+
+void FTHight::read(unsigned char * input_data, unsigned int toRead, unsigned int *recived)
+{
+    FT_HANDLE fthandle;
+    FT_Open(dev_number, &fthandle);
+    FT_SetBaudRate(fthandle, baudrate);
+    FT_SetBitMode(fthandle, mask, mode);
+    FT_Read(fthandle, input_data, (DWORD)toRead, (DWORD*)recived);
     FT_Close(fthandle);
 }
 
 void FTHight::send_read(unsigned char * input_data, unsigned int * readed)
 {
     DWORD written;
+    FT_STATUS ftStatus;
+    DWORD ftRxBytes;
+    DWORD ftTxBytes;
+    DWORD ftEvStat;
+
     FT_HANDLE fthandle;
     FT_Open(dev_number, &fthandle);
     FT_SetBaudRate(fthandle, baudrate);
     FT_SetBitMode(fthandle, mask, mode);
-    FT_Write(fthandle, output_data, index, &written);
-    FT_Read(fthandle, input_data, index, readed);
+    if (FT_Write(fthandle, output_data, (DWORD)index, &written)!=FT_OK)
+    {
+        FT_Close(fthandle);
+        return;
+    }
+    do
+    {
+        ftStatus = FT_GetStatus(fthandle, &ftRxBytes, &ftTxBytes, &ftEvStat);
+        if (ftStatus == FT_IO_ERROR)
+        {
+            FT_Close(fthandle);
+            return;
+        }
+    } while (ftRxBytes == written);
+
+    bool flTimedout = false;
+    bool flFatalError = false;
+    DWORD totalBytesRead = 0;
+    DWORD bytesRead;
+    do
+    {
+        bytesRead = 0;
+        ftStatus = FT_Read(fthandle, input_data, ftRxBytes, &bytesRead);
+        if ((ftStatus == FT_OK) || (ftStatus == FT_IO_ERROR))
+            if (bytesRead > 0)
+                totalBytesRead += bytesRead;
+            else
+                flTimedout = true;
+        else
+            flFatalError = true;
+    } while ((totalBytesRead = ftRxBytes) || flTimedout || flFatalError);
+
+    FT_Read(fthandle, input_data, (DWORD)index, (DWORD*)readed);
+
     FT_Close(fthandle);
 }
 

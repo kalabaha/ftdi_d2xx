@@ -47,7 +47,6 @@ void FT_I2C::send()
     ft->send_read(input_data);
 }
 
-void
 
 void FT_I2C::print(bool is_hex)
 {

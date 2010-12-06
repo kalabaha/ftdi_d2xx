@@ -14,5 +14,5 @@ int main()
     ft.put_byte(1);
     ft.put_stop();
     ft.put_byte(0xff);
-    ft.send(false);
+    ft.print(false);
 }
