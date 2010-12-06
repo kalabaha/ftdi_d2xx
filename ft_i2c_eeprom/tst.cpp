@@ -9,7 +9,7 @@
 
 int main()
 {
-    FT_I2C_eeprom fteeprom(255, SDA, SCL, SDAREAD, DEVICE);
+    FT_I2C_eeprom fteeprom(1000, SDA, SCL, SDAREAD, DEVICE);
     unsigned char data;
     while (1)
     {
@@ -25,7 +25,8 @@ int main()
             };
             unsigned int data_int;
         } data;
-        unsigned int address;
+        unsigned int address = 0;
+        data.data_int = 0;
         std::cin >> selector;
         switch (selector)
         {

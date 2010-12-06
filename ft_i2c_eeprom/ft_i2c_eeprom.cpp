@@ -1,20 +1,11 @@
 #include "ft_i2c_eeprom.h"
 
-union IntBytes
-{
-    struct
-    {
-        unsigned char hi_byte;
-        unsigned char lo_byte;
-    };
-    unsigned int int_data;
-};
-
 FT_I2C_eeprom::FT_I2C_eeprom(unsigned int size, unsigned char SDA, unsigned char SCL, unsigned char SDAREAD, unsigned char dev_address)
 {
-    fti2c = new FT_I2C(255, SDA, SCL, SDAREAD);
+    fti2c = new FT_I2C(size, SDA, SCL, SDAREAD);
     this->dev_address = dev_address;
     this->sda_read = SDAREAD;
+    this->size = size;
 }
 
 void FT_I2C_eeprom::write_byte(unsigned int address, unsigned char data)
@@ -55,6 +46,7 @@ unsigned char FT_I2C_eeprom::read_byte(unsigned int address)
 
     addr.int_data = address;
 
+
     fti2c->put_start();
     fti2c->put_byte(dev_address);
     fti2c->put_byte(addr.hi_byte);
@@ -63,7 +55,7 @@ unsigned char FT_I2C_eeprom::read_byte(unsigned int address)
     fti2c->put_byte(dev_address+1);
     fti2c->put_byte(0xff);
 
-    unsigned char readed[3000];
+    unsigned char readed[size];
     unsigned int recived;
     fti2c->send_read(readed, &recived);
 
