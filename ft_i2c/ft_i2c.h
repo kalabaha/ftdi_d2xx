@@ -8,9 +8,9 @@ class FT_I2C
     FTHight * ft;
     unsigned char scl;
     unsigned char sda;
-    unsigned char sda_read;
     unsigned char * input_data;
 public:
+    unsigned char sda_read;
     FT_I2C(unsigned int size, unsigned char SDA, unsigned char SCL, unsigned char SDAREAD);
     void put_start();
     void put_stop();
